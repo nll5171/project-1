@@ -1,0 +1,20 @@
+{
+  "name": "http_api_two",
+  "version": "1.0.0",
+  "description": "An implementation of the HTTP API II assignment",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "author": "Nick Lang",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.30.0",
+    "nodemon": "^3.1.7",
+    "webpack": "^5.95.0"
+  }
+}
