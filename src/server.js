@@ -49,6 +49,8 @@ const handlePost = (request, response, parsedUrl) => {
 };
 
 const onRequest = (request, response) => {
+  jsonHandler.processDatabase();
+
   // parse url into individual parts
   // returns an object of url parts by name
   const protocol = request.connection.encrypted ? 'https' : 'http';

@@ -1,4 +1,14 @@
-const users = {};
+const fs = require('fs'); // pull in the file system module
+
+const database = fs.readFileSync(`${__dirname}/../datasets/pokedex.json`);
+
+// JavaScript object to store all Pokedex data
+let pokedex;
+
+const processDatabase = () => {
+  pokedex = JSON.parse(database);
+  console.log(pokedex[1]);
+};
 
 // Takes request, responds with status code and json object
 const respondJSON = (request, response, status, object) => {
@@ -74,6 +84,7 @@ const notFound = (request, response) => {
 };
 
 module.exports = {
+  processDatabase,
   getUsers,
   addUser,
   notFound,
