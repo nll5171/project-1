@@ -20,7 +20,7 @@ const getBundle = (request, response) => {
   response.writeHead(200, { 'Content-Type': 'application/javascript' });
   response.write(bundle);
   response.end();
-}
+};
 
 module.exports = {
   getIndex,

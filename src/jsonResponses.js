@@ -69,9 +69,7 @@ const getPokemonNames = (request, response, params) => {
           }
         }
       }
-    }
-
-    else if (id || name) {
+    } else if (id || name) {
       if (name && name === currentPokemon.name.toLowerCase()) {
         pokemonNames.push(currentPokemon.name);
       } else if (id && id === currentPokemon.id) {
@@ -108,19 +106,25 @@ const getPokemon = (request, response, params) => {
   for (let a = 0; a < pokedexArr.length; a++) {
     const currentPokemon = pokedexArr[a];
 
-    // Check if any types in the params match current pokemon
-    for (let i = 0; i < type.length; i++) {
-      for (let j = 0; j < currentPokemon.type.length; j++) {
-        if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
+    if (type) {
+      // Check if any types in the params match current pokemon
+      for (let i = 0; i < type.length; i++) {
+        for (let j = 0; j < currentPokemon.type.length; j++) {
+          if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
           // If id and name were not provided, add currentPokemon to search results
-          if (!id || !name) pokemon.push(currentPokemon);
+            if (!id || !name) pokemon.push(currentPokemon);
 
-          // Check if currentPokemon matches the more strict params
-          else if (name && name === currentPokemon.name.toLowerCase()) pokemon.push(currentPokemon);
-
-          else if (id === currentPokemon.id) pokemon.push(currentPokemon);
+            // Check if currentPokemon matches the more strict params
+            else if (name && name === currentPokemon.name.toLowerCase()) {
+              pokemon.push(currentPokemon);
+            } else if (id === currentPokemon.id) pokemon.push(currentPokemon);
+          }
         }
       }
+    } else if (id || name) {
+      if (name && name === currentPokemon.name.toLowerCase()) {
+        pokemon.push(currentPokemon);
+      } else if (id && id === currentPokemon.id) pokemon.push(currentPokemon);
     }
   }
 
