@@ -44,8 +44,10 @@ const handleResponse = async (response, parseResponse) => {
 const requestUpdate = async (userForm) => {
 
     //Grab the url and method from the html form below
-    const url = userForm.querySelector('#urlField').value;
+    let url = '/getPokemonNames?type=fire';
     const method = userForm.querySelector('#methodSelect').value;
+
+    console.log(url);
 
     //Await our fetch response. Go to the URL, use the right method, and attach the headers.
     let response = await fetch(url, {
@@ -87,7 +89,7 @@ const init = () => {
     const nameForm = document.querySelector('#nameForm'); // Adding users
 
     //function to handle our request. In this case, it also cancels the built in html form action
-    const getUsers = (e) => {
+    const getPokemonNames = (e) => {
         e.preventDefault();
         requestUpdate(userForm);
         return false;
@@ -100,7 +102,7 @@ const init = () => {
     }
 
     //add event listener
-    userForm.addEventListener('submit', getUsers);
+    userForm.addEventListener('submit', getPokemonNames);
     nameForm.addEventListener('submit', addUser);
 };
 

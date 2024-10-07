@@ -47,23 +47,35 @@ const getPokemonNames = (request, response, params) => {
   // pokemon meets any of the types entered, add them
   const pokedexArr = Object.values(pokedex);
 
+  console.log(type);
+
   for (let a = 0; a < pokedexArr.length; a++) {
     const currentPokemon = pokedexArr[a];
 
-    // Check if any types in the params match current pokemon
-    for (let i = 0; i < type.length; i++) {
-      for (let j = 0; j < currentPokemon.type.length; j++) {
-        if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
-          // If id and name were not provided, add currentPokemon to search results
-          if (!id || !name) pokemonNames.push(currentPokemon.name);
+    if (type) {
+      // Check if any types in the params match current pokemon
+      for (let i = 0; i < type.length; i++) {
+        for (let j = 0; j < currentPokemon.type.length; j++) {
+          if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
+            // If id and name were not provided, add currentPokemon to search results
+            if (!id || !name) pokemonNames.push(currentPokemon.name);
 
-          // Check if currentPokemon matches the more strict params
-          else if (name && name === currentPokemon.name.toLowerCase()) {
-            pokemonNames.push(currentPokemon.name);
-          } else if (id === currentPokemon.id) {
-            pokemonNames.push(currentPokemon.name);
+            // Check if currentPokemon matches the more strict params
+            else if (name && name === currentPokemon.name.toLowerCase()) {
+              pokemonNames.push(currentPokemon.name);
+            } else if (id && id === currentPokemon.id) {
+              pokemonNames.push(currentPokemon.name);
+            }
           }
         }
+      }
+    }
+
+    else if (id || name) {
+      if (name && name === currentPokemon.name.toLowerCase()) {
+        pokemonNames.push(currentPokemon.name);
+      } else if (id && id === currentPokemon.id) {
+        pokemonNames.push(currentPokemon.name);
       }
     }
   }

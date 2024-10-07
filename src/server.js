@@ -7,10 +7,13 @@ const jsonHandler = require('./jsonResponses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+let databaseLoaded = false;
+
 // struct that removes the need for lots of switch statements
 const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getCSS,
+  '/bundle.js': htmlHandler.getBundle,
   '/getPokemonNames': jsonHandler.getPokemonNames,
   '/getPokemon': jsonHandler.getPokemon,
   '/getPokemonByNumber': jsonHandler.getPokemonByNumber,
@@ -52,7 +55,10 @@ const handlePost = (request, response, parsedUrl) => {
 };
 
 const onRequest = (request, response) => {
-  jsonHandler.processDatabase();
+  if (!databaseLoaded) {
+    jsonHandler.processDatabase();
+    databaseLoaded = true;
+  }
 
   // parse url into individual parts
   // returns an object of url parts by name
@@ -60,6 +66,10 @@ const onRequest = (request, response) => {
   const parsedUrl = new URL(request.url, `${protocol}://${request.headers.host}`);
 
   if (request.method === 'POST') return handlePost(request, response, parsedUrl);
+
+  console.log(parsedUrl);
+  console.log(parsedUrl.pathname);
+  console.log(parsedUrl.searchParams);
 
   if (urlStruct[parsedUrl.pathname]) {
     return urlStruct[parsedUrl.pathname](request, response, parsedUrl.searchParams);
