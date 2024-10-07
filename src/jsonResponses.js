@@ -7,7 +7,6 @@ let pokedex;
 
 const processDatabase = () => {
   pokedex = JSON.parse(database);
-  console.log(pokedex[1]);
 };
 
 // Takes request, responds with status code and json object
@@ -26,51 +25,141 @@ const respondJSON = (request, response, status, object) => {
   response.end();
 };
 
-// Returns the list of users as a JSON object
-const getUsers = (request, response) => {
+// Same as getPokemon, but only returns the names as a response
+const getPokemonNames = (request, response, params) => {
+  const pokemonNames = [];
+  let name;
+  let id;
+  let types;
+
+  if (params.get('name')) name = params.get('name');
+  if (params.get('id') && Number(params.get('id')) != NaN) 
+    id = Number(params.get('id'));
+  if (params.get('types')) types = params.get('types').split(',');
+
+  for (let i = 0; i < pokedex.length; i++) {
+    let currentPokemon = pokedex[i];
+
+    if (name && currentPokemon.name === name)
+      pokemonNames.push(currentPokemon.name);
+
+    else if (id && Number(currentPokemon,num) === id)
+      pokemonNames.push(currentPokemon.name);
+
+    else if (types) {
+      let actualTypes = currentPokemon.type;
+
+      for (let i = 0; i < types.length; i++) {
+        for (let j = 0; j < actualTypes.length; j++) {
+          if (types[i] === types[j]) {
+            pokemonNames.push(currentPokemon.name);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   const responseJSON = {
-    users,
+    pokemonNames,
   };
 
-  return respondJSON(request, response, 200, responseJSON);
+  respondJSON(request, response, 200, responseJSON);
 };
 
-// Adds new user if they don't exist, updates age otherwise
-const addUser = (request, response) => {
+// Gets all information about each pokemon matching the parameters,
+// returns said data as a response
+const getPokemon = (request, response, params) => {
+  const pokemon = [];
+  let name;
+  let id;
+  let types;
+
+  if (params.get('name')) name = params.get('name');
+  if (params.get('id') && Number(params.get('id')) != NaN) 
+    id = Number(params.get('id'));
+  if (params.get('types')) types = params.get('types').split(',');
+
+  for (let i = 0; i < pokedex.length; i++) {
+    let currentPokemon = pokedex[i];
+
+    if (name && currentPokemon.name === name)
+      pokemon.push(currentPokemon);
+
+    else if (id && Number(currentPokemon,num) === id)
+      pokemon.push(currentPokemon);
+
+    else if (types) {
+      let actualTypes = currentPokemon.type;
+
+      for (let i = 0; i < types.length; i++) {
+        for (let j = 0; j < actualTypes.length; j++) {
+          if (types[i] === types[j]) {
+            pokemon.push(currentPokemon);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   const responseJSON = {
-    message: 'Name and age are both required.',
+    pokemonNames,
   };
 
-  // Get name and age into object from request body
-  const { name, age } = request.body;
+  respondJSON(request, response, 200, responseJSON);
+};
 
-  // Make sure we have both fields, else it's a bad request
-  if (!name || !age) {
-    response.id = 'addUserMissingParams';
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
-  // If params exist, assume updating user by default
-  let responseCode = 204;
-
-  // If user doesn't yet exist, add user with 201 for created
-  if (!users[name]) {
-    responseCode = 201;
-    users[name] = {
-      name,
+// Gets one Pokemon by their Pokedex number
+const getPokemonByNumber = (request, response, params) => {
+  // Make sure id was provided, return 400 error otherwise
+  if (!params.get('id')) {
+    const responseJSON = {
+      error: 'Missing Pokedex number query param',
+      id: 'getPokemonByNumber missing param'
     };
+
+    respondJSON(request, response, 400, responseJSON);
   }
 
-  users[name].age = age;
+  // id was provided. Need to check if valid next 
+  else {
+    let id = Number(params.get('id'));
 
-  // Send back message that user was created
-  if (responseCode === 201) {
-    responseJSON.message = 'Created successfully';
-    return respondJSON(request, response, responseCode, responseJSON);
+    // Check if id entered is valid. Return 400 error if not
+    if (id < 1 || id > 151) {
+      const responseJSON = {
+        error: 'Invalid id provided. Enter number between 1 and 151',
+        id: 'getPokemonByNumber invalid id'
+      };
+
+      respondJSON(request, response, 400, responseJSON);
+    }
+
+    // id exists and is valid
+    else {
+      let pokemon = pokedex[id - 1];
+
+      const responseJSON = {
+        pokemon,
+      };
+
+      respondJSON(request, response, 200, responseJSON);
+    }
   }
+};
 
-  // 204 shouldn't include response body. Sending back empty one
-  return respondJSON(request, response, responseCode, {});
+// Does not need parameters, just has them to reduce code in server.json
+const getAllPokemon = (request, response, params) => {
+  const responseJSON = {
+    pokedex,
+  };
+
+  respondJSON(request, response, 200, responseJSON);
+};
+
+const addPokemon = (request, response, params) => {
+  
 };
 
 // Page doesn't exist, returns 404
@@ -85,7 +174,9 @@ const notFound = (request, response) => {
 
 module.exports = {
   processDatabase,
-  getUsers,
-  addUser,
+  getPokemonNames,
+  getPokemon,
+  getPokemonByNumber,
+  getAllPokemon,
   notFound,
 };

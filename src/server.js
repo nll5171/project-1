@@ -11,7 +11,10 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getCSS,
-  '/getUsers': jsonHandler.getUsers,
+  '/getPokemonNames': jsonHandler.getPokemonNames,
+  '/getPokemon': jsonHandler.getPokemon,
+  '/getPokemonByNumber': jsonHandler.getPokemonByNumber,
+  '/getAllPokemon': jsonHandler.getAllPokemon,
   notFound: jsonHandler.notFound,
 };
 
@@ -59,7 +62,7 @@ const onRequest = (request, response) => {
   if (request.method === 'POST') return handlePost(request, response, parsedUrl);
 
   if (urlStruct[parsedUrl.pathname]) {
-    return urlStruct[parsedUrl.pathname](request, response);
+    return urlStruct[parsedUrl.pathname](request, response, parsedUrl.searchParams);
   } return urlStruct.notFound(request, response);
 };
 
