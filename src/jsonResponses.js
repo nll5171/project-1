@@ -3,10 +3,14 @@ const fs = require('fs'); // pull in the file system module
 const database = fs.readFileSync(`${__dirname}/../datasets/pokedex.json`);
 
 // JavaScript object to store all Pokedex data
-let pokedex;
+const pokedex = {};
 
 const processDatabase = () => {
-  pokedex = JSON.parse(database);
+  const pokedexArr = JSON.parse(database);
+
+  for (let i = 0; i < pokedexArr.length; i++) {
+    pokedex[pokedexArr[i].id] = pokedexArr[i];
+  }
 };
 
 // Takes request, responds with status code and json object
@@ -25,35 +29,39 @@ const respondJSON = (request, response, status, object) => {
   response.end();
 };
 
-// Same as getPokemon, but only returns the names as a response
+// Gets all information about each pokemon matching the parameters,
+// returns said data as a response
 const getPokemonNames = (request, response, params) => {
+  // Stores all pokemon matching the parameters provided
   const pokemonNames = [];
-  let name;
   let id;
-  let types;
+  let name;
+  let type;
 
-  if (params.get('name')) name = params.get('name');
-  if (params.get('id') && Number(params.get('id')) != NaN) 
-    id = Number(params.get('id'));
-  if (params.get('types')) types = params.get('types').split(',');
+  if (params.get('id')) id = params.get('id').trim();
+  if (params.get('name')) name = params.get('name').trim().toLowerCase();
+  if (params.get('type')) type = params.get('type').trim().split(',');
 
-  for (let i = 0; i < pokedex.length; i++) {
-    let currentPokemon = pokedex[i];
+  // Start more broadly with type, then get more specific
+  // to name, then id, assuming they exist. If they don't, and
+  // pokemon meets any of the types entered, add them
+  const pokedexArr = Object.values(pokedex);
 
-    if (name && currentPokemon.name === name)
-      pokemonNames.push(currentPokemon.name);
+  for (let a = 0; a < pokedexArr.length; a++) {
+    const currentPokemon = pokedexArr[a];
 
-    else if (id && Number(currentPokemon,num) === id)
-      pokemonNames.push(currentPokemon.name);
+    // Check if any types in the params match current pokemon
+    for (let i = 0; i < type.length; i++) {
+      for (let j = 0; j < currentPokemon.type.length; j++) {
+        if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
+          // If id and name were not provided, add currentPokemon to search results
+          if (!id || !name) pokemonNames.push(currentPokemon.name);
 
-    else if (types) {
-      let actualTypes = currentPokemon.type;
-
-      for (let i = 0; i < types.length; i++) {
-        for (let j = 0; j < actualTypes.length; j++) {
-          if (types[i] === types[j]) {
+          // Check if currentPokemon matches the more strict params
+          else if (name && name === currentPokemon.name.toLowerCase()) {
             pokemonNames.push(currentPokemon.name);
-            break;
+          } else if (id === currentPokemon.id) {
+            pokemonNames.push(currentPokemon.name);
           }
         }
       }
@@ -64,50 +72,51 @@ const getPokemonNames = (request, response, params) => {
     pokemonNames,
   };
 
-  respondJSON(request, response, 200, responseJSON);
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 // Gets all information about each pokemon matching the parameters,
 // returns said data as a response
 const getPokemon = (request, response, params) => {
+  // Stores all pokemon matching the parameters provided
   const pokemon = [];
-  let name;
   let id;
-  let types;
+  let name;
+  let type;
 
-  if (params.get('name')) name = params.get('name');
-  if (params.get('id') && Number(params.get('id')) != NaN) 
-    id = Number(params.get('id'));
-  if (params.get('types')) types = params.get('types').split(',');
+  if (params.get('id')) id = params.get('id').trim();
+  if (params.get('name')) name = params.get('name').trim().toLowerCase();
+  if (params.get('type')) type = params.get('type').trim().split(',');
 
-  for (let i = 0; i < pokedex.length; i++) {
-    let currentPokemon = pokedex[i];
+  // Start more broadly with type, then get more specific
+  // to name, then id, assuming they exist. If they don't, and
+  // pokemon meets any of the types entered, add them
+  const pokedexArr = Object.values(pokedex);
 
-    if (name && currentPokemon.name === name)
-      pokemon.push(currentPokemon);
+  for (let a = 0; a < pokedexArr.length; a++) {
+    const currentPokemon = pokedexArr[a];
 
-    else if (id && Number(currentPokemon,num) === id)
-      pokemon.push(currentPokemon);
+    // Check if any types in the params match current pokemon
+    for (let i = 0; i < type.length; i++) {
+      for (let j = 0; j < currentPokemon.type.length; j++) {
+        if (type[i].toLowerCase() === currentPokemon.type[j].toLowerCase()) {
+          // If id and name were not provided, add currentPokemon to search results
+          if (!id || !name) pokemon.push(currentPokemon);
 
-    else if (types) {
-      let actualTypes = currentPokemon.type;
+          // Check if currentPokemon matches the more strict params
+          else if (name && name === currentPokemon.name.toLowerCase()) pokemon.push(currentPokemon);
 
-      for (let i = 0; i < types.length; i++) {
-        for (let j = 0; j < actualTypes.length; j++) {
-          if (types[i] === types[j]) {
-            pokemon.push(currentPokemon);
-            break;
-          }
+          else if (id === currentPokemon.id) pokemon.push(currentPokemon);
         }
       }
     }
   }
 
   const responseJSON = {
-    pokemonNames,
+    pokemon,
   };
 
-  respondJSON(request, response, 200, responseJSON);
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 // Gets one Pokemon by their Pokedex number
@@ -116,50 +125,115 @@ const getPokemonByNumber = (request, response, params) => {
   if (!params.get('id')) {
     const responseJSON = {
       error: 'Missing Pokedex number query param',
-      id: 'getPokemonByNumber missing param'
+      id: 'getPokemonByNumberMissingParam',
     };
 
-    respondJSON(request, response, 400, responseJSON);
+    return respondJSON(request, response, 400, responseJSON);
   }
 
-  // id was provided. Need to check if valid next 
-  else {
-    let id = Number(params.get('id'));
+  // id was provided. Need to check if valid next
 
-    // Check if id entered is valid. Return 400 error if not
-    if (id < 1 || id > 151) {
-      const responseJSON = {
-        error: 'Invalid id provided. Enter number between 1 and 151',
-        id: 'getPokemonByNumber invalid id'
-      };
+  const id = params.get('id');
 
-      respondJSON(request, response, 400, responseJSON);
-    }
+  // Check if id entered is valid. Return 400 error if not
+  if (!pokedex[id]) {
+    const responseJSON = {
+      error: 'Invalid id provided. Enter number between 1 and 151',
+      id: 'getPokemonByNumberInvalidId',
+    };
 
-    // id exists and is valid
-    else {
-      let pokemon = pokedex[id - 1];
-
-      const responseJSON = {
-        pokemon,
-      };
-
-      respondJSON(request, response, 200, responseJSON);
-    }
+    return respondJSON(request, response, 400, responseJSON);
   }
+
+  // id exists and is valid
+  const pokemon = pokedex[id];
+
+  const responseJSON = {
+    pokemon,
+  };
+
+  return respondJSON(request, response, 200, responseJSON);
 };
 
 // Does not need parameters, just has them to reduce code in server.json
 const getAllPokemon = (request, response, params) => {
+  console.log(params);
+
+  const pokedexArr = Object.values(pokedex);
+
   const responseJSON = {
-    pokedex,
+    pokedexArr,
   };
 
-  respondJSON(request, response, 200, responseJSON);
+  return respondJSON(request, response, 200, responseJSON);
 };
 
-const addPokemon = (request, response, params) => {
-  
+// All standard params are included, but only id, name, and type are required
+const addPokemon = (request, response) => {
+  const responseJSON = {
+    message: 'id, name and type (comma separated) are all required',
+  };
+
+  // Get all pokedex object data from request body, including optional params
+  const {
+    id, name, img, type, height, weight, weaknesses, nextEvolution,
+  } = request.body;
+
+  if (!id || !name || !type) {
+    responseJSON.id = 'addPokemonMissingParams';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  const pokemon = {
+    id,
+    name,
+    img,
+    type,
+    height,
+    weight,
+    weaknesses,
+    next_evolution: nextEvolution,
+  };
+
+  // Will simply update content if it already exists in database
+  let responseCode = 204;
+
+  if (!pokedex[id]) {
+    responseCode = 201;
+    responseJSON.message = 'Created successfully';
+    pokedex[id] = pokemon;
+    return respondJSON(request, response, responseCode, responseJSON);
+  }
+
+  pokedex[id] = pokemon;
+
+  // If updated, don't include any content
+  return respondJSON(request, response, responseCode, {});
+};
+
+// Tiers being strength rating, from Ubers to PU
+const setPokemonTier = (request, response) => {
+  const responseJSON = {
+    message: 'ID and tier are both required',
+  };
+
+  const { id, tier } = request.body;
+
+  if (!id || !tier) {
+    responseJSON.id = 'setPokemonTierMissingParams';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  if (!pokedex[id]) {
+    responseJSON.message = 'ID does not exist within database';
+    responseJSON.id = 'setPokemonTierInvalidID';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  pokedex[id].tier = tier;
+  responseJSON.message = 'Tier added!';
+
+  return respondJSON(request, response, 201, responseJSON);
 };
 
 // Page doesn't exist, returns 404
@@ -169,7 +243,7 @@ const notFound = (request, response) => {
     id: 'notFound',
   };
 
-  respondJSON(request, response, 404, responseJSON);
+  return respondJSON(request, response, 404, responseJSON);
 };
 
 module.exports = {
@@ -178,5 +252,7 @@ module.exports = {
   getPokemon,
   getPokemonByNumber,
   getAllPokemon,
+  addPokemon,
+  setPokemonTier,
   notFound,
 };
