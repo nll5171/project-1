@@ -15,6 +15,8 @@ const urlStruct = {
   '/getPokemon': jsonHandler.getPokemon,
   '/getPokemonByNumber': jsonHandler.getPokemonByNumber,
   '/getAllPokemon': jsonHandler.getAllPokemon,
+  '/addPokemon': jsonHandler.addPokemon,
+  '/setPokemonTier': jsonHandler.setPokemonTier,
   notFound: jsonHandler.notFound,
 };
 
@@ -46,9 +48,7 @@ const parseBody = (request, response, handler) => {
 
 // Handle post request stuff
 const handlePost = (request, response, parsedUrl) => {
-  if (parsedUrl.pathname === '/addUser') {
-    parseBody(request, response, jsonHandler.addUser);
-  }
+  parseBody(request, response, urlStruct.parsedUrl);
 };
 
 const onRequest = (request, response) => {
