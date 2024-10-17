@@ -41,15 +41,31 @@ const handleResponse = async (response, parseResponse) => {
 };
 
 //function to send request. Marked async because of await
-const requestUpdate = async (userForm) => {
+// const requestUpdate = async (userForm) => {
 
-    //Grab the url and method from the html form below
-    let url = '/getPokemonNames?type=fire';
-    const method = userForm.querySelector('#methodSelect').value;
+//     //Grab the url and method from the html form below
+//     let url = '/getPokemonNames?type=fire';
+//     const method = userForm.querySelector('#methodSelect').value;
 
+//     console.log(url);
+
+//     //Await our fetch response. Go to the URL, use the right method, and attach the headers.
+//     let response = await fetch(url, {
+//         method,
+//         headers: {
+//             'Accept': 'application/json'
+//         },
+//     });
+
+//     // Check if request should send back a response, or just status code for HEAD
+//     handleResponse(response, method === 'get');
+// };
+
+const requestUpdate = async (form, url) => {
+    console.log(form.querySelector('#method-select'));
+    const method = form.querySelector('#method-select').value;
     console.log(url);
 
-    //Await our fetch response. Go to the URL, use the right method, and attach the headers.
     let response = await fetch(url, {
         method,
         headers: {
@@ -84,12 +100,32 @@ const sendPost = async (nameForm) => {
 }
 
 const init = () => {
+    const pkmnNamesForm = document.querySelector('#collapsePokemonNames');
+    const pkmnForm = document.querySelector('#collapsePokemon');
+    const pkmnNumber = document.querySelector('#collapsePokemonNumber');
+    const allPkmn = document.querySelector('#collapseAllPokemon');
+
     //grab form for user retrieval
     const userForm = document.querySelector('#userForm'); // Receiving users
     const nameForm = document.querySelector('#nameForm'); // Adding users
 
-    //function to handle our request. In this case, it also cancels the built in html form action
     const getPokemonNames = (e) => {
+        let name = pkmnNamesForm.querySelector('#pkmnName').value;
+        let typeUnformatted = pkmnNamesForm.querySelector('#pkmnType').value;
+        let type = typeUnformatted.split(', ').join(',');
+        let id = pkmnNamesForm.querySelector('#pkmnID').value;
+
+        // Format url
+        let url = '/getPokemonNames?';
+        if (name) url += `name=${name}`;
+        if (type) url += `type=${type}`;
+        if (id) url += `id=${id}`;
+
+        requestUpdate(pkmnNamesForm, url);
+    }
+
+    //function to handle our request. In this case, it also cancels the built in html form action
+    const getUsers = (e) => {
         e.preventDefault();
         requestUpdate(userForm);
         return false;
@@ -102,7 +138,9 @@ const init = () => {
     }
 
     //add event listener
-    userForm.addEventListener('submit', getPokemonNames);
+    pkmnNamesForm.querySelector('#search-btn').addEventListener('click', getPokemonNames);
+
+    userForm.addEventListener('submit', getUsers);
     nameForm.addEventListener('submit', addUser);
 };
 
