@@ -39,18 +39,19 @@
                         data-bs-target="#collapsePokemonNames"
                         aria-controls="collapsePokemonNames">getPokémonNames</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-controls="collapseExample">getPokémon</button>
+                        data-bs-target="#collapsePokemon" aria-controls="collapsePokemon">getPokémon</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-controls="collapseExample">getPokémonByNumber</button>
+                        data-bs-target="#collapsePokemonNumber" aria-controls="collapsePokemonNumber">getPokémonByNumber</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-controls="collapseExample">getAllPokémon</button>
+                        data-bs-target="#collapseAllPokemon" aria-controls="collapseAllPokemon">getAllPokémon</button>
                     </p>
                   </div>
                   <div class="collapse" id="collapsePokemonNames">
                     <div class="card card-body">
                       <div class="row">
                         <div class="col">
-                          <p>Retrieves a list of the names of each Pokemon based on the three possible parameters provided:
+                          <p>Retrieves a list of the names of each Pokemon based on the three possible parameters
+                            provided:
                           </p>
                           <ul>
                             <li>Name. Ex. "Gengar"</li>
@@ -58,8 +59,11 @@
                             <li>National Pokédex Number. Ex. "94"</li>
                           </ul>
                           <p>Note that the type search is inclusive rather than exclusive. If multiple types are entered
-                            without an accompanying name or Pokédex number, any Pokémon that contain a type satisfying the
-                            requirements will be added to the search results</p>
+                            without an accompanying name or Pokédex number, any Pokémon that contain a type satisfying
+                            the
+                            requirements will be added to the search results.</p>
+                          <p>Also keep in mind this will only be returning the name of each Pokémon, rather than all of
+                            their accompanying data.</p>
                         </div>
                       </div>
                       <div class="row g-3">
@@ -74,13 +78,13 @@
                         </div>
                         <div class="col-auto">
                           <input id="pkmnType" type="text" class="form-control" aria-label="Type">
-                        </div>   
+                        </div>
                         <div class="col-auto">
                           <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
                         </div>
                         <div class="col-auto">
                           <input id="pkmnID" type="number" class="form-control" placeholder="0">
-                        </div>                   
+                        </div>
                       </div>
                       <div class="row mt-4">
                         <div class="col-auto">
@@ -91,6 +95,122 @@
                             <option value="GET">GET</option>
                             <option value="HEAD">HEAD</option>
                           </select>
+                        </div>
+                        <div class="col-auto" data-bs-theme="dark">
+                          <button class="btn request-btn">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse" id="collapsePokemon">
+                    <div class="card card-body">
+                      <div class="row">
+                        <div class="col">
+                          <p>Retrieves a list of Pokemon based on the three possible parameters
+                            provided:
+                          </p>
+                          <ul>
+                            <li>Name. Ex. "Gengar"</li>
+                            <li>Type (comma separated). Ex. "ghost, poison"</li>
+                            <li>National Pokédex Number. Ex. "94"</li>
+                          </ul>
+                          <p>Note that the type search is inclusive rather than exclusive. If multiple types are entered
+                            without an accompanying name or Pokédex number, any Pokémon that contain a type satisfying
+                            the
+                            requirements will be added to the search results.</p>
+                        </div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-auto">
+                          <label for="#pkmnName" class="col-form-label">Name:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnName" type="text" class="form-control" aria-label="Name">
+                        </div>
+                        <div class="col-auto">
+                          <label for="#pkmnType" class="col-form-label">Type(s) (Comma separated):</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnType" type="text" class="form-control" aria-label="Type">
+                        </div>
+                        <div class="col-auto">
+                          <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0">
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <div class="col-auto">
+                          <label for="#method-select" class="col-form-label">Request Type:</label>
+                        </div>
+                        <div class="col-auto">
+                          <select id="method-select" class="form-select">
+                            <option value="GET">GET</option>
+                            <option value="HEAD">HEAD</option>
+                          </select>
+                        </div>
+                        <div class="col-auto" data-bs-theme="dark">
+                          <button class="btn request-btn">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse" id="collapsePokemonNumber">
+                    <div class="card card-body">
+                      <div class="row">
+                        <div class="col">
+                          <p>Retrieves a list of Pokemon based on the national Pokédex number provided. For example, a
+                            number of 94 would return Gengar as a search result. All information about the Pokémon will
+                            be returned by this request.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-auto">
+                          <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0">
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <div class="col-auto">
+                          <label for="#method-select" class="col-form-label">Request Type:</label>
+                        </div>
+                        <div class="col-auto">
+                          <select id="method-select" class="form-select">
+                            <option value="GET">GET</option>
+                            <option value="HEAD">HEAD</option>
+                          </select>
+                        </div>
+                        <div class="col-auto" data-bs-theme="dark">
+                          <button class="btn request-btn">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse" id="collapseAllPokemon">
+                    <div class="card card-body">
+                      <div class="row">
+                        <div class="col">
+                          <p>Retrieves a list of all Pokémon available in the database. Much like with the getPokémon
+                            request, this will include all available information about said Pokémon.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-auto">
+                          <label for="#method-select" class="col-form-label">Request Type:</label>
+                        </div>
+                        <div class="col-auto">
+                          <select id="method-select" class="form-select">
+                            <option value="GET">GET</option>
+                            <option value="HEAD">HEAD</option>
+                          </select>
+                        </div>
+                        <div class="col-auto" data-bs-theme="dark">
+                          <button class="btn request-btn">Search</button>
                         </div>
                       </div>
                     </div>
