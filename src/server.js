@@ -14,6 +14,7 @@ const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getCSS,
   '/bundle.js': htmlHandler.getBundle,
+  '/pokeball-logo.png': htmlHandler.getLogo,
   '/getPokemonNames': jsonHandler.getPokemonNames,
   '/getPokemon': jsonHandler.getPokemon,
   '/getPokemonByNumber': jsonHandler.getPokemonByNumber,
