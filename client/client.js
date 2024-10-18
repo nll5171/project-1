@@ -188,6 +188,7 @@ const init = () => {
     const pkmnNumberForm = document.querySelector('#collapsePokemonNumber');
     const allPkmnForm = document.querySelector('#collapseAllPokemon');
     const addPkmnForm = document.querySelector('#collapseAddPokemon');
+    const setTierForm = document.querySelector('#collapseSetTier');
 
     const getPokemonNames = () => {
         formatSearchRequest(pkmnNamesForm, '/getPokemonNames');
@@ -220,7 +221,6 @@ const init = () => {
         let weight = addPkmnForm.querySelector('#pkmnWeight').value;
         let weaknessesUnformatted = addPkmnForm.querySelector('#pkmnWeaknesses').value;
         let weaknesses = weaknessesUnformatted.split(', ');
-        console.log(weaknesses);
 
         let num;
 
@@ -232,6 +232,14 @@ const init = () => {
         sendPost('/addPokemon', formData);
     };
 
+    const setPokemonTier = () => {
+        let id = setTierForm.querySelector('#pkmnID').value;
+        let tier = setTierForm.querySelector('#pkmnTier').value;
+
+        const formData = `id=${id}&tier=${tier}`;
+        sendPost('/setPokemonTier', formData);
+    };
+
     // GET/HEAD Requests
     pkmnNamesForm.querySelector('#search-btn').addEventListener('click', getPokemonNames);
     pkmnForm.querySelector('#search-btn').addEventListener('click', getPokemon);
@@ -240,6 +248,7 @@ const init = () => {
     
     // POST Requests
     addPkmnForm.querySelector('#submit-btn').addEventListener('click', addPokemon);
+    setTierForm.querySelector('#submit-btn').addEventListener('click', setPokemonTier);
 };
 
 window.onload = init;
