@@ -4,24 +4,30 @@ const handleResponse = async (response, parseResponse) => {
     //Grab the content section so that we can write to it
     const content = document.querySelector('#request-output');
 
+    let contentHTML = ``;
+    contentHTML += `<h3 class='text-center'>`;
+
     //Based on the status of the response, write something.
     switch (response.status) {
         case 200:
-            content.innerHTML = `<b>Success</b>`;
+            contentHTML += `<b>Success</b>`;
             break;
         case 201:
-            content.innerHTML = `<b>Created</b>`;
+            contentHTML += `<b>Created</b>`;
             break;
         case 204:
-            content.innerHTML = `<b>Updated</b>`;
+            contentHTML += `<b>Updated</b>`;
             break;
         case 400:
-            content.innerHTML = `<b>Bad Request</b>`;
+            contentHTML += `<b>Bad Request</b>`;
             break;
         default:
-            content.innerHTML = `<b>Not Found</b>`;
+            contentHTML += `<b>Not Found</b>`;
             break;
     }
+
+    contentHTML += `</h3>`;
+    content.innerHTML = contentHTML;
 
     //If we should parse a response (meaning we made a get request)
     if (parseResponse && response.status !== 204) {
@@ -31,7 +37,7 @@ const handleResponse = async (response, parseResponse) => {
 
         // Don't add "Message: " if parsing 200 request
         if (response.status !== 200) {
-            content.innerHTML += `<p>Message: ${obj.message}</p>`;
+            content.innerHTML += `<p class="text-center">Message: ${obj.message}</p>`;
         } else {
             //To display the data easily, we will just stringify it again and display it.
             // let jsonString = JSON.stringify(obj.users);
@@ -61,10 +67,12 @@ const handleResponse = async (response, parseResponse) => {
                         // Check if it's outputting a list of all Pokemon data, or just names
                         if (typeof item === 'object' && item !== null) {
                             // Create image and add it to the card
-                            let cardImage = document.createElement('img');
-                            cardImage.classList.add('card-img-top');
-                            cardImage.src = item['img'];
-                            card.appendChild(cardImage);
+                            if (item['img']) {
+                                let cardImage = document.createElement('img');
+                                cardImage.classList.add('card-img-top');
+                                cardImage.src = item['img'];
+                                card.appendChild(cardImage);
+                            }
 
                             // Setup head of the card
                             let cardHead = document.createElement('div');
@@ -72,7 +80,18 @@ const handleResponse = async (response, parseResponse) => {
                             cardHead.innerHTML = `<b>${item['num']}</b> ${item['name']}`;
                             card.appendChild(cardHead);
 
-                            let cardBodyHTML = `<ul><li>Height: ${item['height']}</li><li>Weight: ${item['weight']}</li>`;
+                            let cardBodyHTML = `<ul>`;
+
+                            let types = item['type'];
+                            cardBodyHTML += `<li>Type(s):<ul>`;
+
+                            for (let j = 0; j < types.length; j++) 
+                                cardBodyHTML += `<li>${types[j]}</li>`;
+
+                            cardBodyHTML+= `</ul></li>`;
+
+                            if (item['height']) cardBodyHTML += `<li>Height: ${item['height']}</li>`;
+                            if (item['weight']) cardBodyHTML += `<li>Weight: ${item['weight']}</li>`;
 
                             // Iterate through all the Pokemon's weaknesses
                             let weaknesses = item['weaknesses'];
@@ -98,10 +117,11 @@ const handleResponse = async (response, parseResponse) => {
                                 cardBodyHTML += `</ol></li>`;
                             }
 
-                            // Assuming user adds tier to the list of properties, this will add it if it exists for the pokemon
+                            // Assuming user adds tier to the list of properties, this will add it if it exists for the Pokemon
                             let tier = item['tier'];
                             if (tier) cardBodyHTML += `<li>Tier: ${tier}</li>`;
 
+                            cardBodyHTML += `</ul>`;
                             cardBody.innerHTML = cardBodyHTML;
                         } else {
                             cardBody.innerHTML = item;
@@ -131,31 +151,45 @@ const requestUpdate = async (form, url) => {
     handleResponse(response, method === 'get');
 };
 
-const sendPost = async (nameForm) => {
-    const url = nameForm.getAttribute('action');
-    const method = nameForm.getAttribute('method');
+// const sendPost = async (nameForm) => {
+//     const url = nameForm.getAttribute('action');
+//     const method = nameForm.getAttribute('method');
 
-    const nameField = nameForm.querySelector('#nameField');
-    const ageField = nameForm.querySelector('#ageField');
+//     const nameField = nameForm.querySelector('#nameField');
+//     const ageField = nameForm.querySelector('#ageField');
 
-    const formData = `name=${nameField.value}&age=${ageField.value}`;
+//     const formData = `name=${nameField.value}&age=${ageField.value}`;
 
+//     let response = await fetch(url, {
+//         method: method,
+//         headers: {
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//             'Accept': 'application/json',
+//         },
+//         body: formData,
+//     });
+
+//     // Once response exists, handle it
+//     handleResponse(response, true);
+// }
+
+const sendPost = async (url, formData) => {
     let response = await fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
-        },
-        body: formData,
+       method: 'POST',
+       headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+       },
+       body: formData,
     });
 
     // Once response exists, handle it
     handleResponse(response, true);
-}
+};
 
 // Handles repeated code for getPokemonNames and getPokemon, since they 
 // function the same, just with different outputs
-const formatRequest = (form, urlPath) => {
+const formatSearchRequest = (form, urlPath) => {
     let name = form.querySelector('#pkmnName').value;
     let typeUnformatted = form.querySelector('#pkmnType').value;
     let type = typeUnformatted.split(', ').join(',');
@@ -175,13 +209,14 @@ const init = () => {
     const pkmnForm = document.querySelector('#collapsePokemon');
     const pkmnNumberForm = document.querySelector('#collapsePokemonNumber');
     const allPkmnForm = document.querySelector('#collapseAllPokemon');
+    const addPkmnForm = document.querySelector('#collapseAddPokemon');
 
     const getPokemonNames = () => {
-        formatRequest(pkmnNamesForm, '/getPokemonNames');
+        formatSearchRequest(pkmnNamesForm, '/getPokemonNames');
     };
 
     const getPokemon = () => {
-        formatRequest(pkmnForm, '/getPokemon');
+        formatSearchRequest(pkmnForm, '/getPokemon');
     };
 
     const getPokemonByNumber = () => {
@@ -197,11 +232,36 @@ const init = () => {
         requestUpdate(allPkmnForm, '/getAllPokemon');
     };
 
-    //add event listener
+    const addPokemon = () => {
+        let id = addPkmnForm.querySelector('#pkmnID').value;
+        let name = addPkmnForm.querySelector('#pkmnName').value;
+        let typeUnformatted = addPkmnForm.querySelector('#pkmnType').value;
+        let type = typeUnformatted.split(', ').join(',');
+        let img = addPkmnForm.querySelector('#pkmnImg').value;
+        let height = addPkmnForm.querySelector('#pkmnHeight').value;
+        let weight = addPkmnForm.querySelector('#pkmnWeight').value;
+        let weaknessesUnformatted = addPkmnForm.querySelector('#pkmnWeaknesses').value;
+        let weaknesses = weaknessesUnformatted.split(', ');
+        console.log(weaknesses);
+
+        let num;
+
+        // Solution from StackOverflow: https://stackoverflow.com/questions/10841773/javascript-format-number-to-day-with-always-3-digits
+        if (id) num = ("00" + id).slice(-3);
+
+        // Put the data into a usable format for POST request
+        const formData = `id=${id}&name=${name}&type=${type}&img=${img}&height=${height}&weight=${weight}&weaknesses=${weaknesses}&num=${num}`;
+        sendPost('/addPokemon', formData);
+    };
+
+    // GET/HEAD Requests
     pkmnNamesForm.querySelector('#search-btn').addEventListener('click', getPokemonNames);
     pkmnForm.querySelector('#search-btn').addEventListener('click', getPokemon);
     pkmnNumberForm.querySelector('#search-btn').addEventListener('click', getPokemonByNumber);
     allPkmnForm.querySelector('#search-btn').addEventListener('click', getAllPokemon);
+    
+    // POST Requests
+    addPkmnForm.querySelector('#submit-btn').addEventListener('click', addPokemon);
 };
 
 window.onload = init;

@@ -193,7 +193,7 @@ const addPokemon = (request, response) => {
 
   // Get all pokedex object data from request body, including optional params
   const {
-    id, name, img, type, height, weight, weaknesses, nextEvolution,
+    id, num, name, img, type, height, weight, weaknesses,
   } = request.body;
 
   if (!id || !name || !type) {
@@ -201,16 +201,29 @@ const addPokemon = (request, response) => {
     return respondJSON(request, response, 400, responseJSON);
   }
 
+  // const pokemon = {
+  //   id,
+  //   num,
+  //   name,
+  //   img,
+  //   type,
+  //   height,
+  //   weight,
+  //   weaknesses,
+  // };
+
   const pokemon = {
     id,
+    num,
     name,
-    img,
-    type,
-    height,
-    weight,
-    weaknesses,
-    next_evolution: nextEvolution,
+    type
   };
+
+  // Check if the optional parameters were properly filled out, and add them if so
+  if (img) pokemon.img = img;
+  if (height) pokemon.height = height;
+  if (weight) pokemon.weight = weight;
+  if (weaknesses) pokemon.weaknesses = weaknesses.split(',');
 
   // Will simply update content if it already exists in database
   let responseCode = 204;

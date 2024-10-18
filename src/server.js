@@ -52,7 +52,7 @@ const parseBody = (request, response, handler) => {
 
 // Handle post request stuff
 const handlePost = (request, response, parsedUrl) => {
-  parseBody(request, response, urlStruct[parsedUrl]);
+  parseBody(request, response, urlStruct[parsedUrl.pathname]);
 };
 
 const onRequest = (request, response) => {

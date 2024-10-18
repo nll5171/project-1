@@ -41,7 +41,8 @@
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePokemon" aria-controls="collapsePokemon">getPokémon</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapsePokemonNumber" aria-controls="collapsePokemonNumber">getPokémonByNumber</button>
+                        data-bs-target="#collapsePokemonNumber"
+                        aria-controls="collapsePokemonNumber">getPokémonByNumber</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAllPokemon" aria-controls="collapseAllPokemon">getAllPokémon</button>
                     </p>
@@ -83,7 +84,7 @@
                           <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
                         </div>
                         <div class="col-auto">
-                          <input id="pkmnID" type="number" class="form-control" placeholder="0">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0" min="0">
                         </div>
                       </div>
                       <div class="row mt-4">
@@ -137,7 +138,7 @@
                           <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
                         </div>
                         <div class="col-auto">
-                          <input id="pkmnID" type="number" class="form-control" placeholder="0">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0" min="0">
                         </div>
                       </div>
                       <div class="row mt-4">
@@ -171,7 +172,7 @@
                           <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
                         </div>
                         <div class="col-auto">
-                          <input id="pkmnID" type="number" class="form-control" placeholder="0">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0" min="0">
                         </div>
                       </div>
                       <div class="row mt-4">
@@ -232,15 +233,91 @@
                   <div class="col text-center">
                     <p class="d-inline-flex gap-1" data-bs-theme="dark">
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample2" aria-controls="collapseExample">addPokémon</button>
+                        data-bs-target="#collapseAddPokemon" aria-controls="collapseAddPokemon">addPokémon</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseExample2" aria-controls="collapseExample">setPokémonTier</button>
                     </p>
                   </div>
-                  <div class="collapse" id="collapseExample2">
+                  <div class="collapse" id="collapseAddPokemon">
                     <div class="card card-body">
-                      Some placeholder content for the collapse component. This panel is hidden by default but revealed
-                      when the user activates the relevant trigger.
+                      <div class="row">
+                        <div class="col">
+                          <p>Adds another Pokémon to the current database. Since the data is stored locally on the
+                            server,
+                            it will disappear anytime the server restarts. On Heroku, this is usually every 30 minutes
+                            or
+                            so.
+                          </p>
+                          <p>Adding another Pokémon requires all of the following parameters:</p>
+                          <ul>
+                            <li>National Pokédex Number (ie. 94)</li>
+                            <li>Name (ie. Gengar)</li>
+                            <li>Image of the Pokémon (ie. <a
+                                href="http://www.serebii.net/pokemongo/pokemon/094.png">http://www.serebii.net/pokemongo/pokemon/094.png</a>)
+                            </li>
+                            <li>Pokémon type(s), comma separated if it has multiple (ie. Ghost, Poison)</li>
+                            <li>Height (ie. 1.50 m)</li>
+                            <li>Weight (ie. 40.5 kg)</li>
+                            <li>Weakness/Weaknesses, comma separated if it has multiple (ie. Ground, Psychic, Ghost,
+                              Dark)</li>
+                            <li>Next evolution, if applicable (ignore if none)</li>
+                          </ul>
+                          <p>Note that only the <b>national Pokédex number</b>, <b>name</b>, and <b>Pokémon types</b>
+                            are required parameters and will return an error if not filled out. All other parameters are
+                            optional.</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-1">
+                          <label for="#pkmnID" class="col-form-label">Pokédex #:</label>
+                        </div>
+                        <div class="col-1">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0" min="0">
+                        </div>
+                        <div class="col-1">
+                          <label for="#pkmnName" class="col-form-label">Name:</label>
+                        </div>
+                        <div class="col-2">
+                          <input id="pkmnName" type="text" class="form-control" aria-label="Name">
+                        </div>
+                        <div class="col-1">
+                          <label for="#pkmnImg" class="col-form-label">Image:</label>
+                        </div>
+                        <div class="col-2">
+                          <input id="pkmnImg" type="text" class="form-control" aria-label="Image">
+                        </div>
+                        <div class="col-2">
+                          <label for="#pkmnType" class="col-form-label">Type(s) (Comma separated):</label>
+                        </div>
+                        <div class="col-2">
+                          <input id="pkmnType" type="text" class="form-control" aria-label="Type">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-auto">
+                          <label for="#pkmnHeight" class="col-form-label">Height:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnHeight" type="text" class="form-control" aria-label="Height">
+                        </div>
+                        <div class="col-auto">
+                          <label for="#pkmnWeight" class="col-form-label">Weight:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnWeight" type="text" class="form-control" aria-label="Weight">
+                        </div>
+                        <div class="col-auto">
+                          <label for="#pkmnWeaknesses" class="col-form-label">Weakness(es) (Comma separated):</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnWeaknesses" type="text" class="form-control" aria-label="Weaknesses">
+                        </div>
+                      </div>
+                      <div class="row mt-4">
+                        <div class="col-auto" data-bs-theme="dark">
+                          <button id="submit-btn" class="btn request-btn">Add Pokémon</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
