@@ -34,8 +34,81 @@ const handleResponse = async (response, parseResponse) => {
             content.innerHTML += `<p>Message: ${obj.message}</p>`;
         } else {
             //To display the data easily, we will just stringify it again and display it.
-            let jsonString = JSON.stringify(obj.users);
-            content.innerHTML += `<p>${jsonString}</p>`;
+            // let jsonString = JSON.stringify(obj.users);
+            // content.innerHTML += `<p>${jsonString}</p>`;
+
+            // Technically, each object result should have one array in it, the
+            // names are just different so this avoids having to deal with that
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    // Get the array of either objects or strings
+                    let list = obj[key];
+
+                    for (let i = 0; i < list.length; i++) {
+                        let item = list[i];
+
+                        // setup columns to be responsive
+                        let column = document.createElement('div');
+                        column.classList.add('col-2');
+                        column.classList.add('col-md-4');
+                        column.classList.add('col-xl-3');
+
+                        let card = document.createElement('div');
+                        let cardBody = document.createElement('div');
+                        card.classList.add('card');
+                        cardBody.classList.add('card-body');
+
+                        // Check if it's outputting a list of all Pokemon data, or just names
+                        if (typeof item === 'object' && item !== null) {
+                            // Create image and add it to the card
+                            let cardImage = document.createElement('img');
+                            cardImage.classList.add('card-img-top');
+                            cardImage.src = item['img'];
+                            card.appendChild(cardImage);
+
+                            // Setup head of the card
+                            let cardHead = document.createElement('div');
+                            cardHead.classList.add('card-header');
+                            cardHead.innerHTML = `<b>${item['num']}</b> ${item['name']}`;
+                            card.appendChild(cardHead);
+
+                            let cardBodyHTML = `<ul><li>Height: ${item['height']}</li><li>Weight: ${item['weight']}</li>`;
+
+                            // Iterate through all the Pokemon's weaknesses
+                            let weaknesses = item['weaknesses'];
+                            if (weaknesses) {
+                                cardBodyHTML += `<li>Weaknesses:<ul>`;
+
+                                for (let j = 0; j < weaknesses.length; j++)
+                                    cardBodyHTML += `<li>${weaknesses[j]}</li>`;
+
+                                cardBodyHTML += `</ul></li>`;
+                            }
+
+                            let nextEvolutions = item['next_evolution'];
+                            if (nextEvolutions) {
+                                cardBodyHTML += `<li>Next evolution(s):<ol>`;
+
+                                // Format each simple JSON object as one unordered list element
+                                for (let j = 0; j < nextEvolutions.length; j++) {
+                                    let evolution = nextEvolutions[j];
+                                    cardBodyHTML += `<li>${evolution['num']}: ${evolution['name']}</li>`;
+                                }
+
+                                cardBodyHTML += `</ol></li>`;
+                            }
+
+                            cardBody.innerHTML = cardBodyHTML;
+                        } else {
+                            cardBody.innerHTML = item;
+                        }
+
+                        card.appendChild(cardBody);
+                        column.appendChild(card);
+                        content.appendChild(column);
+                    }
+                }
+            }
         }
     }
 };
@@ -118,7 +191,7 @@ const init = () => {
 
     const getAllPokemon = () => {
         requestUpdate(allPkmnForm, '/getAllPokemon');
-    }
+    };
 
     //add event listener
     pkmnNamesForm.querySelector('#search-btn').addEventListener('click', getPokemonNames);

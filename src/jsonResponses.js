@@ -140,7 +140,7 @@ const getPokemonByNumber = (request, response, params) => {
   // Make sure id was provided, return 400 error otherwise
   if (!params.get('id')) {
     const responseJSON = {
-      error: 'Missing Pokedex number query param',
+      message: 'Missing Pokedex number query param',
       id: 'getPokemonByNumberMissingParam',
     };
 
@@ -154,7 +154,7 @@ const getPokemonByNumber = (request, response, params) => {
   // Check if id entered is valid. Return 400 error if not
   if (!pokedex[id]) {
     const responseJSON = {
-      error: 'Invalid id provided. No pokemon exists with that ID in the database.',
+      message: 'Invalid id provided. No pokemon exists with that ID in the database.',
       id: 'getPokemonByNumberInvalidId',
     };
 
@@ -162,7 +162,8 @@ const getPokemonByNumber = (request, response, params) => {
   }
 
   // id exists and is valid
-  const pokemon = pokedex[id];
+  const pokemon = [];
+  pokemon.push(pokedex[id]);
 
   const responseJSON = {
     pokemon,
