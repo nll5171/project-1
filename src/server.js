@@ -68,10 +68,6 @@ const onRequest = (request, response) => {
 
   if (request.method === 'POST') return handlePost(request, response, parsedUrl);
 
-  console.log(parsedUrl);
-  console.log(parsedUrl.pathname);
-  console.log(parsedUrl.searchParams);
-
   if (urlStruct[parsedUrl.pathname]) {
     return urlStruct[parsedUrl.pathname](request, response, parsedUrl.searchParams);
   } return urlStruct.notFound(request, response);

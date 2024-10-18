@@ -47,8 +47,6 @@ const getPokemonNames = (request, response, params) => {
   // pokemon meets any of the types entered, add them
   const pokedexArr = Object.values(pokedex);
 
-  console.log(type);
-
   for (let a = 0; a < pokedexArr.length; a++) {
     const currentPokemon = pokedexArr[a];
 
@@ -174,6 +172,7 @@ const getPokemonByNumber = (request, response, params) => {
 
 // Does not need parameters, just has them to reduce code in server.json
 const getAllPokemon = (request, response, params) => {
+  // put this here to get rid of the error. feels like cheating
   console.log(params);
 
   const pokedexArr = Object.values(pokedex);
@@ -201,22 +200,11 @@ const addPokemon = (request, response) => {
     return respondJSON(request, response, 400, responseJSON);
   }
 
-  // const pokemon = {
-  //   id,
-  //   num,
-  //   name,
-  //   img,
-  //   type,
-  //   height,
-  //   weight,
-  //   weaknesses,
-  // };
-
   const pokemon = {
     id,
     num,
     name,
-    type
+    type: type.split(','),
   };
 
   // Check if the optional parameters were properly filled out, and add them if so
