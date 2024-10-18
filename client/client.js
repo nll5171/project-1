@@ -98,6 +98,10 @@ const handleResponse = async (response, parseResponse) => {
                                 cardBodyHTML += `</ol></li>`;
                             }
 
+                            // Assuming user adds tier to the list of properties, this will add it if it exists for the pokemon
+                            let tier = item['tier'];
+                            if (tier) cardBodyHTML += `<li>Tier: ${tier}</li>`;
+
                             cardBody.innerHTML = cardBodyHTML;
                         } else {
                             cardBody.innerHTML = item;
