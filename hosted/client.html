@@ -235,7 +235,7 @@
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAddPokemon" aria-controls="collapseAddPokemon">addPokémon</button>
                       <button class="btn request-btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample2" aria-controls="collapseExample">setPokémonTier</button>
+                        data-bs-target="#collapseSetTier" aria-controls="collapseSetTier">setPokémonTier</button>
                     </p>
                   </div>
                   <div class="collapse" id="collapseAddPokemon">
@@ -317,6 +317,50 @@
                         <div class="col-auto" data-bs-theme="dark">
                           <button id="submit-btn" class="btn request-btn">Add Pokémon</button>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse" id="collapseSetTier">
+                    <div class="card card-body">
+                      <div class="row">
+                        <div class="col">
+                          <p>Allows user to assign a tier to any Pokémon in the database, which will then be added to
+                            the displayed search results. The required parameters will be as follows:</p>
+                            <ul>
+                              <li>National Pokédex number of Pokémon (ie. 94 for Gengar)</li>
+                              <li>Pokémon tier placement (ie. RU, or Rarely Used, in Pokémon Scarlet and Pokémon Violet)</li>
+                            </ul>
+                          <p>The tiers provided are Smogon's, the competitive
+                            standard for single battles, and based off the most recent Pokémon games as of October 2024,
+                            being Pokémon Scarlet and Pokémon Violet. You can search Smogon's database for tier placements<a
+                              href="https://www.smogon.com/dex/sv/pokemon/">here</a>.</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-auto">
+                          <label for="#pkmnID" class="col-form-label">Pokédex Number:</label>
+                        </div>
+                        <div class="col-auto">
+                          <input id="pkmnID" type="number" class="form-control" placeholder="0" min="0">
+                        </div>
+                        <div class="col-auto">
+                          <label for="#pkmnTier" class="col-form-label">Pokémon Tier:</label>
+                        </div>
+                        <div class="col-auto">
+                          <select id="pkmnTier" class="form-select">
+                            <option value="uber" selected>Uber</option>
+                            <option value="ou">OU (Overused)</option>
+                            <option value="uu">UU (Underused)</option>
+                            <option value="ru">RU (Rarely used)</option>
+                            <option value="nu">NU (Never used)</option>
+                            <option value="pu">PU</option>
+                            <option value="ou">ZU (Zero used)</option>
+                          </select>
+                      </div>
+                    </div>
+                    <div class="row mt-4">
+                      <div class="col-auto" data-bs-theme="dark">
+                        <button id="submit-btn" class="btn request-btn">Add Pokémon</button>
                       </div>
                     </div>
                   </div>

@@ -151,28 +151,6 @@ const requestUpdate = async (form, url) => {
     handleResponse(response, method === 'get');
 };
 
-// const sendPost = async (nameForm) => {
-//     const url = nameForm.getAttribute('action');
-//     const method = nameForm.getAttribute('method');
-
-//     const nameField = nameForm.querySelector('#nameField');
-//     const ageField = nameForm.querySelector('#ageField');
-
-//     const formData = `name=${nameField.value}&age=${ageField.value}`;
-
-//     let response = await fetch(url, {
-//         method: method,
-//         headers: {
-//             'Content-Type': 'application/x-www-form-urlencoded',
-//             'Accept': 'application/json',
-//         },
-//         body: formData,
-//     });
-
-//     // Once response exists, handle it
-//     handleResponse(response, true);
-// }
-
 const sendPost = async (url, formData) => {
     let response = await fetch(url, {
        method: 'POST',
