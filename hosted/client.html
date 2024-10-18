@@ -55,7 +55,7 @@
                           </p>
                           <ul>
                             <li>Name. Ex. "Gengar"</li>
-                            <li>Type (comma separated, no spaces). Ex. "ghost,poison"</li>
+                            <li>Type (comma separated). Ex. "ghost, poison"</li>
                             <li>National Pokédex Number. Ex. "94"</li>
                           </ul>
                           <p>Note that the type search is inclusive rather than exclusive. If multiple types are entered
@@ -151,7 +151,7 @@
                           </select>
                         </div>
                         <div class="col-auto" data-bs-theme="dark">
-                          <button class="btn request-btn">Search</button>
+                          <button id="search-btn" class="btn request-btn">Search</button>
                         </div>
                       </div>
                     </div>
@@ -185,7 +185,7 @@
                           </select>
                         </div>
                         <div class="col-auto" data-bs-theme="dark">
-                          <button class="btn request-btn">Search</button>
+                          <button id="search-btn" class="btn request-btn">Search</button>
                         </div>
                       </div>
                     </div>
@@ -210,7 +210,7 @@
                           </select>
                         </div>
                         <div class="col-auto" data-bs-theme="dark">
-                          <button class="btn request-btn">Search</button>
+                          <button id="search-btn" class="btn request-btn">Search</button>
                         </div>
                       </div>
                     </div>
@@ -252,29 +252,8 @@
     </div>
   </section>
 
-  <section id="top">
-    <h3>POST Status Code Tests</h3>
-    <form id="nameForm" action="/addUser" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="age">Age: </label>
-      <input id="ageField" type="number" name="age" min="0" max="100" step="1" />
-      <input type="submit" value="Add User" />
-    </form>
-    <form id="userForm" action="/getPokemonNames" method="get">
-      <select id='urlField'>
-        <option value='/getPokemonNames'>/getPokemonNames</option>
-        <option value='/notReal'>/notReal</option>
-      </select>
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get User" />
-    </form>
-  </section>
-  <section id="content">
-    <h3 class="text-center">Nothing here yet! Try making a request to populate this area!</h3>
+  <section id="content" class="mt-4">
+    <h3 id="request-output" class="text-center">Nothing here yet! Try making a request to populate this area!</h3>
   </section>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

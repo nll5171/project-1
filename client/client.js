@@ -2,7 +2,7 @@
 // to prevent parsing a HEAD request
 const handleResponse = async (response, parseResponse) => {
     //Grab the content section so that we can write to it
-    const content = document.querySelector('#content');
+    const content = document.querySelector('#request-output');
 
     //Based on the status of the response, write something.
     switch (response.status) {
@@ -40,31 +40,8 @@ const handleResponse = async (response, parseResponse) => {
     }
 };
 
-//function to send request. Marked async because of await
-// const requestUpdate = async (userForm) => {
-
-//     //Grab the url and method from the html form below
-//     let url = '/getPokemonNames?type=fire';
-//     const method = userForm.querySelector('#methodSelect').value;
-
-//     console.log(url);
-
-//     //Await our fetch response. Go to the URL, use the right method, and attach the headers.
-//     let response = await fetch(url, {
-//         method,
-//         headers: {
-//             'Accept': 'application/json'
-//         },
-//     });
-
-//     // Check if request should send back a response, or just status code for HEAD
-//     handleResponse(response, method === 'get');
-// };
-
 const requestUpdate = async (form, url) => {
-    console.log(form.querySelector('#method-select'));
     const method = form.querySelector('#method-select').value;
-    console.log(url);
 
     let response = await fetch(url, {
         method,
@@ -99,49 +76,55 @@ const sendPost = async (nameForm) => {
     handleResponse(response, true);
 }
 
+// Handles repeated code for getPokemonNames and getPokemon, since they 
+// function the same, just with different outputs
+const formatRequest = (form, urlPath) => {
+    let name = form.querySelector('#pkmnName').value;
+    let typeUnformatted = form.querySelector('#pkmnType').value;
+    let type = typeUnformatted.split(', ').join(',');
+    let id = form.querySelector('#pkmnID').value;
+
+    // Format url
+    let url = `${urlPath}?`;
+    if (name) url += `name=${name}`;
+    if (type) url += `type=${type}`;
+    if (id) url += `id=${id}`;
+
+    requestUpdate(form, url);
+}
+
 const init = () => {
     const pkmnNamesForm = document.querySelector('#collapsePokemonNames');
     const pkmnForm = document.querySelector('#collapsePokemon');
-    const pkmnNumber = document.querySelector('#collapsePokemonNumber');
-    const allPkmn = document.querySelector('#collapseAllPokemon');
+    const pkmnNumberForm = document.querySelector('#collapsePokemonNumber');
+    const allPkmnForm = document.querySelector('#collapseAllPokemon');
 
-    //grab form for user retrieval
-    const userForm = document.querySelector('#userForm'); // Receiving users
-    const nameForm = document.querySelector('#nameForm'); // Adding users
+    const getPokemonNames = () => {
+        formatRequest(pkmnNamesForm, '/getPokemonNames');
+    };
 
-    const getPokemonNames = (e) => {
-        let name = pkmnNamesForm.querySelector('#pkmnName').value;
-        let typeUnformatted = pkmnNamesForm.querySelector('#pkmnType').value;
-        let type = typeUnformatted.split(', ').join(',');
-        let id = pkmnNamesForm.querySelector('#pkmnID').value;
+    const getPokemon = () => {
+        formatRequest(pkmnForm, '/getPokemon');
+    };
 
-        // Format url
-        let url = '/getPokemonNames?';
-        if (name) url += `name=${name}`;
-        if (type) url += `type=${type}`;
+    const getPokemonByNumber = () => {
+        let id = pkmnNumberForm.querySelector('#pkmnID').value;
+
+        let url = '/getPokemonByNumber?';
         if (id) url += `id=${id}`;
 
-        requestUpdate(pkmnNamesForm, url);
-    }
+        requestUpdate(pkmnNumberForm, url);
+    };
 
-    //function to handle our request. In this case, it also cancels the built in html form action
-    const getUsers = (e) => {
-        e.preventDefault();
-        requestUpdate(userForm);
-        return false;
-    }
-
-    const addUser = (e) => {
-        e.preventDefault();
-        sendPost(nameForm);
-        return false;
+    const getAllPokemon = () => {
+        requestUpdate(allPkmnForm, '/getAllPokemon');
     }
 
     //add event listener
     pkmnNamesForm.querySelector('#search-btn').addEventListener('click', getPokemonNames);
-
-    userForm.addEventListener('submit', getUsers);
-    nameForm.addEventListener('submit', addUser);
+    pkmnForm.querySelector('#search-btn').addEventListener('click', getPokemon);
+    pkmnNumberForm.querySelector('#search-btn').addEventListener('click', getPokemonByNumber);
+    allPkmnForm.querySelector('#search-btn').addEventListener('click', getAllPokemon);
 };
 
 window.onload = init;

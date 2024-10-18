@@ -154,7 +154,7 @@ const getPokemonByNumber = (request, response, params) => {
   // Check if id entered is valid. Return 400 error if not
   if (!pokedex[id]) {
     const responseJSON = {
-      error: 'Invalid id provided. Enter number between 1 and 151',
+      error: 'Invalid id provided. No pokemon exists with that ID in the database.',
       id: 'getPokemonByNumberInvalidId',
     };
 
